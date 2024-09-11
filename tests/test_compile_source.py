@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from packaging.version import Version
 
@@ -40,12 +42,12 @@ def foo() -> int128:
 def test_compile_metadata(foo_source, vyper_version):
     if vyper_version <= Version("0.3.1"):
         pytest.skip("metadata output not supported in vyper < 0.3.2")
-    output = vvm.compile_source(foo_source, output_format="metadata")
-    assert "function_info" in output
+    output = vvm.raw_compile_source(foo_source, output_format="metadata")
+    assert "function_info" in json.loads(output)
 
 
 def test_compile_metadata_from_file(foo_path, vyper_version):
     if vyper_version <= Version("0.3.1"):
         pytest.skip("metadata output not supported in vyper < 0.3.2")
-    output = vvm.compile_files([foo_path], output_format="metadata")
-    assert "function_info" in output
+    output = vvm.raw_compile(source_files=[foo_path], output_format="metadata")
+    assert "function_info" in json.loads(output)
