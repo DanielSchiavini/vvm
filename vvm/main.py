@@ -67,6 +67,7 @@ def compile_source(
         source_files=[source_path],
         base_path=base_path,
         evm_version=evm_version,
+        cwd=Path(source_path).parent if base_path is None else base_path
     )
 
     return {"<stdin>": list(compiler_data.values())[0]}
@@ -106,12 +107,18 @@ def compile_files(
     Dict
         Compiler output
     """
+    if base_path is None:
+        first_file = source_files if isinstance(source_files, str) else source_files[0]
+        cwd = Path(first_file).parent
+    else:
+        cwd = base_path
     return _compile(
         vyper_binary=vyper_binary,
         vyper_version=vyper_version,
         source_files=source_files,
         base_path=base_path,
         evm_version=evm_version,
+        cwd=cwd,
     )
 
 
@@ -167,7 +174,8 @@ def compile_standard(
         vyper_binary = get_executable(vyper_version)
 
     stdoutdata, stderrdata, command, proc = wrapper.vyper_wrapper(
-        vyper_binary=vyper_binary, stdin=json.dumps(input_data), standard_json=True, p=base_path
+        vyper_binary=vyper_binary, stdin=json.dumps(input_data), standard_json=True, p=base_path,
+        cwd=base_path
     )
 
     compiler_output = json.loads(stdoutdata)

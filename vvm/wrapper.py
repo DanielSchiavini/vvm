@@ -40,6 +40,7 @@ def vyper_wrapper(
     stdin: str = None,
     source_files: Union[List, Path, str] = None,
     success_return_code: int = 0,
+    cwd: Union[Path, str] = None,
     **kwargs: Any,
 ) -> Tuple[str, str, List, subprocess.Popen]:
     """
@@ -117,6 +118,7 @@ def vyper_wrapper(
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         encoding="utf8",
+        cwd=cwd,
     )
 
     stdoutdata, stderrdata = proc.communicate(stdin)

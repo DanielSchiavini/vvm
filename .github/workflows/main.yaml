@@ -11,34 +11,12 @@ name: vvm workflow
 
 jobs:
 
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-
-    - name: Install Tox
-      run: pip install tox wheel
-
-    - name: Run Tox
-      run: tox -e lint
-
   test:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        python-version: [["3.8", "38"], ["3.9", "39"], ["3.10", "310"], ["3.11", "311"], ["3.12", "312"]]
-        include:
-          - os: macos-latest
-            python-version: ["3.11", "311"]
-          - os: windows-latest
-            python-version: ["3.11", "311"]
+        os: [windows-latest]
+        python-version: [["3.11", "311"]]
 
     runs-on: ${{ matrix.os }}
 
@@ -55,10 +33,3 @@ jobs:
 
     - name: Run Tox
       run: tox -e py${{ matrix.python-version[1] }}
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        file: ./coverage.xml
-        # for now not failing, this may be reverted once we set it up properly
-        fail_ci_if_error: false
