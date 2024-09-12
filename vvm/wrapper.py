@@ -118,7 +118,7 @@ def vyper_wrapper(
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         encoding="utf8",
-        cwd=cwd,
+        cwd=cwd or vyper_binary.parent,
     )
 
     stdoutdata, stderrdata = proc.communicate(stdin)
